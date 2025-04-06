@@ -8,7 +8,7 @@ public class HardcoverBookService
 {
     private readonly HttpClient _httpClient;
     
-    string? token = Environment.GetEnvironmentVariable("HARDCOVER_API_TOKEN"); //stored in launchSettings.json
+    string token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJIYXJkY292ZXIiLCJ2ZXJzaW9uIjoiOCIsImp0aSI6ImNjNmRkNGFlLWYyODYtNDljMC04OTNmLTY2MjJhMzk5ODhkOSIsImFwcGxpY2F0aW9uSWQiOjIsInN1YiI6IjI4NTc4IiwiYXVkIjoiMSIsImlkIjoiMjg1NzgiLCJsb2dnZWRJbiI6dHJ1ZSwiaWF0IjoxNzQzODk1Mzk5LCJleHAiOjE3NzU0MzEzOTksImh0dHBzOi8vaGFzdXJhLmlvL2p3dC9jbGFpbXMiOnsieC1oYXN1cmEtYWxsb3dlZC1yb2xlcyI6WyJ1c2VyIl0sIngtaGFzdXJhLWRlZmF1bHQtcm9sZSI6InVzZXIiLCJ4LWhhc3VyYS1yb2xlIjoidXNlciIsIlgtaGFzdXJhLXVzZXItaWQiOiIyODU3OCJ9LCJ1c2VyIjp7ImlkIjoyODU3OH19.IpVBpzFOa0rukUfqnG45uqmo7IfO3i-uI7O6DOvAcz4"; //stored in launchSettings.json
     
     /// <summary>Service used to initiate Hardcover.app API </summary>
     public HardcoverBookService()
