@@ -1,7 +1,7 @@
 using System.Text.Json;
 
 namespace BiblioScope.Model;
-//user id -->  28578
+
 //Utilized Hardcover.app API documentation here --> https://docs.hardcover.app/
 public class HardcoverBookService
 {
