@@ -2,54 +2,34 @@ namespace BiblioScope.Model;
 
 public class Book
 {
-    //fields
-    private string _isbn;
-    private string _title;
-    private string _author;
-    private string _publisher;
-    private string _genre;
+    // Collections
+    public List<string> Genres { get; set; } = new();
+    public List<string> Tags { get; set; } = new();
+    public List<string> Moods { get; set; } = new();
     
-    /// <summary> Represents a singular Book. </summary>
-    public Book(string isbn, string title, string author, string publisher, string genre)
+    // Constructors
+    public Book() { }
+
+    /// <summary> Represents a singular user book </summary>
+    public Book(string isbn, string title, string author, string publisher, List<string> genres)
     {
-        _isbn = isbn;
-        _title = title;
-        _author = author;
-        _publisher = publisher;
-        _genre = genre;
-    }
-    
-    //Properties
-    public string Isbn
-    {
-        get => _isbn;
-        set => _isbn = value; //TODO: Add exeption handling 
+        Isbn = isbn;
+        Title = title;
+        Author = author;
+        Publisher = publisher;
+        Genres = genres;
     }
 
-    public string Title
-    {
-        get => _title;
-        set => _title = value;
-    }
-
-    public string Author //TODO: Figure out what happens when there's multiple authors
-    {
-        get => _author;
-        set => _author = value;
-    }
-
-    public string Publisher
-    {
-        get => _publisher;
-        set => _publisher = value;
-    }
-
-    public string Genre
-    {
-        get => _genre;
-        set => _genre = value;
-    }
-    
-    
-    
+    // Properties
+    public string Isbn { get; set; }
+    public string Title { get; set; }
+    public string Subtitle { get; set; }
+    public string Author { get; set; }
+    public string Description { get; set; }
+    public string CoverImageUrl { get; set; }
+    public string Publisher { get; set; }
+    public string SeriesName { get; set; }
+    public string ReleaseDate { get; set; } 
+    public double Rating { get; set; }
+    public int Pages { get; set; }
 }
