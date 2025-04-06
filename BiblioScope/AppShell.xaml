@@ -7,14 +7,33 @@
     xmlns:view="clr-namespace:BiblioScope.View"
     Shell.FlyoutBehavior="Flyout"
     Title="BiblioScope">
-
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate view:HomePage}"
-        Route="HomePage" />
-    <ShellContent
-        Title="Scan Book"
-        ContentTemplate="{DataTemplate view:ScanBookPage}"
-        Route="ScanBookPage" />
+    
+    <!--Bottom Nav bar-->
+    
+    <FlyoutItem Title="Home" Icon="home_icon">
+        <ShellContent
+            Title="Home"
+            Icon="home_icon"
+            ContentTemplate="{DataTemplate view:HomePage}"
+            Route="HomePage" />
+        <Tab Title="Scan Book" Icon="camera_icon">
+            <ShellContent
+                ContentTemplate="{DataTemplate view:ScanBookPage}"
+                Route="ScanBookPage" />
+        </Tab>
+        <Tab Title="Your Library" Icon="book_icon">
+            <ShellContent
+                ContentTemplate="{DataTemplate view:UserLibraryPage}"
+                Route="UserLibraryPage" />
+        </Tab>
+    </FlyoutItem>
+    <FlyoutItem Title="Profile" Icon="user_icon">
+        <ShellContent
+            Title="Profile"
+            Icon="user_icon"
+            ContentTemplate="{DataTemplate view:UserProfilePage}"
+            Route="UserProfilePage" />
+    </FlyoutItem>
+    
 
 </Shell>
