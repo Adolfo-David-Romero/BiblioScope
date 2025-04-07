@@ -8,8 +8,17 @@
     Shell.FlyoutBehavior="Flyout"
     Title="BiblioScope">
     
-    <!--Bottom Nav bar-->
+    <!--Authentication-->
+    <ShellContent
+        Title="Sign In"
+        ContentTemplate="{DataTemplate view:SignInPage}"
+        Route="SignInPage" />
+    <ShellContent
+        Title="Register"
+        ContentTemplate="{DataTemplate view:SignUpPage}"
+        Route="SignUpPage" />
     
+    <!--Bottom Nav bar-->
     <FlyoutItem Title="Home" Icon="home_icon">
         <ShellContent
             Title="Home"

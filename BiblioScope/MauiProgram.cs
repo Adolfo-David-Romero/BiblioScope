@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using BiblioScope.View;
+using BiblioScope.ViewModel;
+using Firebase.Auth;
+using Firebase.Auth.Providers;
+using Microsoft.Extensions.Logging;
 
 namespace BiblioScope
 {
@@ -19,6 +23,21 @@ namespace BiblioScope
     		builder.Logging.AddDebug();
 #endif
 
+            builder.Services.AddSingleton( new FirebaseAuthClient(new FirebaseAuthConfig()
+                {
+                    ApiKey = "AIzaSyB3bTHLIYEHSN3e2QhVMTYpScfJ65S6GlY",
+                    AuthDomain="biblioscope.firebaseapp.com",
+                    Providers = new FirebaseAuthProvider[]
+                    {
+                        new EmailProvider(),
+                    }
+                }));
+            
+            builder.Services.AddSingleton<SignInPage>();
+            builder.Services.AddSingleton<SignInViewModel>();
+            builder.Services.AddSingleton<SignUpPage>();
+            builder.Services.AddSingleton<SignUpViewModel>();
+            
             return builder.Build();
         }
     }

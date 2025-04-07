@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BiblioScope.View.SignInPage">
+    <ContentPage.Content>
+        <VerticalStackLayout>
+            <!--Inputs-->
+            <Entry Text="{Binding Email}"/>
+            <Entry IsPassword="True" Text = "{Binding Password}"/>
+            
+            <!--Buttons-->
+            <Button
+            Text="Sign In"
+            Command="{Binding SignInCommand}"/>
+            <Button
+            Text="Need an account? Sign Up!"
+            Command="{Binding NavigateSignUpCommand}"/>
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</ContentPage>

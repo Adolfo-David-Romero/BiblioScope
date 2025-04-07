@@ -11,6 +11,7 @@ namespace BiblioScope.View;
 public partial class BookDetailPage : ContentPage
 {
     public Book SelectedBook { get; set; }
+    public UserLibrary UserLibrary { get; set; }
 
     public BookDetailPage()
     {
@@ -26,7 +27,7 @@ public partial class BookDetailPage : ContentPage
     {
         if (SelectedBook != null)
         {
-            //UserLibrary.AddBook(SelectedBook);
+            UserLibrary.AddBook(SelectedBook);
             DisplayAlert("Saved", $"{SelectedBook.Title} added to your library!", "OK");
         }
     }
