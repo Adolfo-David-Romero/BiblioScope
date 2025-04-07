@@ -16,6 +16,11 @@
             Icon="home_icon"
             ContentTemplate="{DataTemplate view:HomePage}"
             Route="HomePage" />
+        <Tab Title="Discover" Icon="search_icon">
+            <ShellContent
+                ContentTemplate="{DataTemplate view:SearchPage}"
+                Route="SearchPage" />
+        </Tab>
         <Tab Title="Scan Book" Icon="camera_icon">
             <ShellContent
                 ContentTemplate="{DataTemplate view:ScanBookPage}"

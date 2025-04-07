@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BiblioScope.View.SearchPage">
+    <ContentPage.Content>
+        <VerticalStackLayout Padding="20" Spacing="10">
+            <SearchBar x:Name="BookSearchBar"
+                       Placeholder="Enter a book title..."
+                       SearchButtonPressed="OnSearchButtonPressed" />
+
+            <Label Text="Raw JSON Response:"
+                   FontAttributes="Bold"
+                   FontSize="Medium" />
+
+            <ScrollView>
+                <Label x:Name="JsonResultLabel"
+                       Text="Waiting for search..."
+                       FontSize="14"
+                       LineBreakMode="WordWrap" />
+            </ScrollView>
+        </VerticalStackLayout> 
+    </ContentPage.Content>
+</ContentPage>
