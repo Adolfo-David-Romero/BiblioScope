@@ -4,6 +4,67 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BiblioScope.View.BookDetailPage">
     <ContentPage.Content>
-        
+        <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+
+            <!-- Cover Image -->
+            <Image 
+                Source="{Binding CoverImageUrl}"
+                HeightRequest="220"
+                Aspect="AspectFill"
+                HorizontalOptions="Center" />
+
+            <!-- Title -->
+            <Label 
+                Text="{Binding Title}"
+                FontSize="24"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center" />
+
+            <!-- Author -->
+            <Label 
+                Text="{Binding Author}"
+                FontSize="18"
+                TextColor="Gray"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center" />
+
+            <!-- Release Date & Pages -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="12">
+                <Label 
+                    Text="{Binding ReleaseDate}"
+                    FontSize="14"
+                    TextColor="DarkGray" />
+                <Label 
+                    Text="•"
+                    FontSize="14"
+                    TextColor="DarkGray" />
+                <Label 
+                    Text="{Binding Pages, StringFormat='{0} pages'}"
+                    FontSize="14"
+                    TextColor="DarkGray" />
+            </HorizontalStackLayout>
+
+            <!-- Description -->
+            <Label 
+                Text="{Binding Description}"
+                FontSize="14"
+                LineBreakMode="WordWrap"
+                TextColor="Black" />
+
+            <!-- Save Button -->
+            <Button 
+                Text="Save to Library"
+                Clicked="OnSaveClicked"
+                BackgroundColor="#4CAF50"
+                TextColor="White"
+                CornerRadius="8"
+                HeightRequest="45"
+                HorizontalOptions="Center"
+                WidthRequest="200" />
+
+        </VerticalStackLayout>
+    </ScrollView>
     </ContentPage.Content>
 </ContentPage>

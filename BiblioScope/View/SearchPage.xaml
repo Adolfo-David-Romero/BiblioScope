@@ -10,6 +10,7 @@
         <viewModel:SearchViewModel />
     </ContentPage.BindingContext>
     <ContentPage.Content>
+        <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="10">
             <!-- Activity Indicator -->
             <ActivityIndicator 
@@ -47,6 +48,8 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+            
         </VerticalStackLayout> 
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
