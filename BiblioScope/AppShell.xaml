@@ -8,18 +8,22 @@
     Shell.FlyoutBehavior="Flyout"
     Title="BiblioScope">
     
-    <!--Authentication-->
-    <ShellContent
-        Title="Sign In"
-        ContentTemplate="{DataTemplate view:SignInPage}"
-        Route="SignInPage" />
-    <ShellContent
-        Title="Register"
-        ContentTemplate="{DataTemplate view:SignUpPage}"
-        Route="SignUpPage" />
-    
-    <!--Bottom Nav bar-->
-    <FlyoutItem Title="Home" Icon="home_icon">
+    <!-- AUTH SECTION (No flyout) -->
+        <ShellContent
+            Title="Sign In"
+            ContentTemplate="{DataTemplate view:SignInPage}"
+            Route="SignInPage"
+            FlyoutItemIsVisible="False"
+            Shell.FlyoutBehavior="Disabled"/>
+        <ShellContent
+            Title="Register"
+            ContentTemplate="{DataTemplate view:SignUpPage}"
+            Route="SignUpPage" 
+            FlyoutItemIsVisible="False"
+            Shell.FlyoutBehavior="Disabled"/>
+
+    <!-- MAIN APP (Flyout enabled) -->
+    <FlyoutItem Title="Home" Route="Main" Icon="home_icon">
         <ShellContent
             Title="Home"
             Icon="home_icon"
@@ -41,10 +45,10 @@
                 Route="UserLibraryPage" />
         </Tab>
     </FlyoutItem>
+
     <FlyoutItem Title="Profile" Icon="user_icon">
         <ShellContent
             Title="Profile"
-            Icon="user_icon"
             ContentTemplate="{DataTemplate view:UserProfilePage}"
             Route="UserProfilePage" />
     </FlyoutItem>

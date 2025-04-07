@@ -2,6 +2,7 @@ using BiblioScope.View;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
+using BiblioScope.View;
 
 namespace BiblioScope.ViewModel;
 //Source --> https://www.youtube.com/watch?v=3DQMQ9Vuk0c&t=167s
@@ -17,6 +18,8 @@ public partial class SignInViewModel: ObservableObject //Utilizes the "ComunityT
     
     [ObservableProperty] private bool _isBusy; //flag
     
+    public string Name => _authClient.User?.Info?.DisplayName ?? "Reader";
+    
     public SignInViewModel(FirebaseAuthClient authClient)
     {
         _authClient = authClient;
@@ -25,6 +28,7 @@ public partial class SignInViewModel: ObservableObject //Utilizes the "ComunityT
     [RelayCommand]
     private async Task SignIn()
     {
+        Console.WriteLine("SignIn Triggered");
         if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
         {
             await Shell.Current.DisplayAlert("Missing Fields", "Please enter both email and password.", "OK");
@@ -45,6 +49,42 @@ public partial class SignInViewModel: ObservableObject //Utilizes the "ComunityT
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private void SignOut()
+    {
+        Console.WriteLine("SignOut Triggered");
+        //PasswordEntry.Text = "";
+        _authClient.SignOut();
+        Shell.Current.GoToAsync("//SignInPage");
+    }
+    
+    [RelayCommand]
+    public async Task DeleteAccountAsync()
+    {
+        Console.WriteLine("Delete Account Triggered");
+        var user = _authClient.User;
+
+        if (user != null)
+        {
+            try
+            {
+                await user.DeleteAsync();
+                await Shell.Current.DisplayAlert("Account Deleted", "Your account has been permanently removed.", "OK");
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Account Deletion Failed:", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+            // Navigate to auth flow
+            await Shell.Current.GoToAsync("//SignInPage");
         }
     }
 

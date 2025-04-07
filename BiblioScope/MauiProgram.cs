@@ -2,6 +2,7 @@
 using BiblioScope.ViewModel;
 using Firebase.Auth;
 using Firebase.Auth.Providers;
+using Firebase.Auth.Repository;
 using Microsoft.Extensions.Logging;
 
 namespace BiblioScope
@@ -30,7 +31,8 @@ namespace BiblioScope
                     Providers = new FirebaseAuthProvider[]
                     {
                         new EmailProvider(),
-                    }
+                    },
+                    UserRepository = new FileUserRepository("BiblioScope") //user login persistence
                 }));
             
             builder.Services.AddSingleton<SignInPage>();

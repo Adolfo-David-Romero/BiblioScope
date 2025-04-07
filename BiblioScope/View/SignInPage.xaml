@@ -10,10 +10,16 @@
             <Image 
                 Source="biblioscope_logo.png"
                 HorizontalOptions="Center"/>
+            <Label
+                Text="{Binding Name, StringFormat='WELCOME, {0}'}"
+                FontAttributes="Bold"
+                FontFamily="Roboto"
+                FontSize="30"
+                HorizontalOptions="Center"/>
             
             <!--Inputs-->
-            <Entry Placeholder="Email" Text="{Binding Email}"/>
-            <Entry Placeholder="Password" IsPassword="True" Text = "{Binding Password}"/>
+            <Entry x:Name="EmailEntry" Placeholder="Email" Text="{Binding Email}"/>
+            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" Text = "{Binding Password}"/>
             
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
             
