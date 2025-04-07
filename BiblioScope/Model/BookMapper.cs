@@ -3,25 +3,24 @@ namespace BiblioScope.Model;
 /// <summary> Maps HardcoverSearchResponse to user book class</summary>
 public class BookMapper
 {
-    // public static Book Map(HardcoverModel document)
-    // {
-    //     return new Book
-    //     {
-    //         Title = document.Title,
-    //         Subtitle = document.Subtitle,
-    //         Author = document.Author_Names?.FirstOrDefault() ?? "Unknown",
-    //         Description = document.Description,
-    //         CoverImageUrl = document.Image?.Url ??
-    //                         "https://thumbs.dreamstime.com/z/question-mark-confusion-d-people-man-person-32590363.jpg",
-    //         ReleaseDate = document.Release_Date,
-    //         Rating = document.Rating,
-    //         Pages = document.Pages,
-    //         SeriesName = document.Series_Names?.FirstOrDefault() ?? "Unknown",
-    //         Isbn = document.Isbns?.FirstOrDefault() ?? "",
-    //         Genres = document.Genres?.ToList() ?? new List<string>(),
-    //         Tags = document.Tags?.ToList() ?? new List<string>(),
-    //         Moods = document.Moods?.ToList() ?? new List<string>()
-    //
-    //     };
-    // }
+    public static Book FromDocument(Document doc)
+    {
+        return new Book
+        {
+            Isbn = doc.isbns?.FirstOrDefault() ?? "N/A",
+            Title = doc.title,
+            Subtitle = doc.subtitle,
+            Author = doc.author_names?.FirstOrDefault() ?? "Unknown",
+            Description = doc.description,
+            CoverImageUrl = doc.image?.url,
+            Publisher = doc.contributions?.FirstOrDefault()?.author?.name, 
+            SeriesName = doc.series_names?.FirstOrDefault()?.ToString() ?? "",
+            ReleaseDate = doc.release_date,
+            Rating = doc.rating,
+            Pages = doc.pages,
+            Genres = doc.genres?.ToList() ?? new List<string>(),
+            Tags = doc.tags?.ToList() ?? new List<string>(),
+            Moods = doc.moods?.ToList() ?? new List<string>()
+        };
+    }
 }

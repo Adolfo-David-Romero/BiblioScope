@@ -2,23 +2,51 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:iOsSpecific="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+             xmlns:view="clr-namespace:BiblioScope.View"
+             xmlns:viewModel="clr-namespace:BiblioScope.ViewModel"
              x:Class="BiblioScope.View.SearchPage">
+    <ContentPage.BindingContext>
+        <viewModel:SearchViewModel />
+    </ContentPage.BindingContext>
     <ContentPage.Content>
         <VerticalStackLayout Padding="20" Spacing="10">
+            <!-- Activity Indicator -->
+            <ActivityIndicator 
+                IsRunning="{Binding IsBusy}" 
+                IsVisible="{Binding IsBusy}"
+                HorizontalOptions="Center"
+                Color="Gray" />
+            
             <SearchBar x:Name="BookSearchBar"
                        Placeholder="Enter a book title..."
-                       SearchButtonPressed="OnSearchButtonPressed" />
+                       Text="{Binding SearchQuery}"
+                       SearchCommand="{Binding SearchCommand}"
+                       SearchButtonPressed="OnSearchButtonPressed"
+                       iOsSpecific:SearchBar.SearchBarStyle="Minimal"/>
+            
 
-            <Label Text="Raw JSON Response:"
-                   FontAttributes="Bold"
-                   FontSize="Medium" />
+            <!-- No Results Message -->
+            <Label 
+                IsVisible="{Binding SearchResults.Count, Converter={StaticResource ZeroToBoolConverter}}"
+                Text="No results found."
+                TextColor="Gray"
+                HorizontalOptions="Center" />
 
-            <ScrollView>
-                <Label x:Name="JsonResultLabel"
-                       Text="Waiting for search..."
-                       FontSize="14"
-                       LineBreakMode="WordWrap" />
-            </ScrollView>
+            <!-- Results List -->
+            <CollectionView 
+                ItemsSource="{Binding SearchResults}"
+                SelectionMode="None">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <view:BookCardView
+                            Book="{Binding}"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:SearchViewModel}}, Path=BookSelectedCommand}"
+                            CommandParameter="{Binding}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </VerticalStackLayout> 
     </ContentPage.Content>
 </ContentPage>

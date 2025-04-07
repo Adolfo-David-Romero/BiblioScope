@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BiblioScope.Model;
+using BiblioScope.ViewModel;
 
 namespace BiblioScope.View;
 
@@ -15,32 +16,14 @@ public partial class SearchPage : ContentPage
     public SearchPage()
     {
         InitializeComponent();
-        _bookService = new HardcoverBookService();
+        BindingContext = new SearchViewModel();
     }
 
-    private async void OnSearchButtonPressed(object sender, EventArgs e)
+    private void OnSearchButtonPressed(object? sender, EventArgs e)
     {
-        var query = BookSearchBar.Text?.Trim();
-        if (string.IsNullOrWhiteSpace(query))
+        if (BindingContext is SearchViewModel vm && vm.SearchCommand.CanExecute(null))
         {
-            JsonResultLabel.Text = "Please enter a book title.";
-            return;
-        }
-
-        JsonResultLabel.Text = "Searching...";
-
-        try
-        {
-            var result = await _bookService.SearchBooksAsync(query, 1, 2);
-
-            var json = JsonSerializer.Serialize(result,
-                new JsonSerializerOptions { WriteIndented = true });
-
-            JsonResultLabel.Text = json;
-        }
-        catch (Exception ex)
-        {
-            JsonResultLabel.Text = $"Error: {ex.Message}";
+            vm.SearchCommand.Execute(null);
         }
     }
 }
