@@ -4,18 +4,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BiblioScope.View.SignInPage">
     <ContentPage.Content>
-        <VerticalStackLayout>
+        <Grid RowDefinitions="Auto,*,Auto" Padding="20">
+        <VerticalStackLayout Grid.Row="0" Spacing="16">
+            <!--Logo-->
+            <Image 
+                Source="biblioscope_logo.png"
+                HorizontalOptions="Center"/>
+            
             <!--Inputs-->
-            <Entry Text="{Binding Email}"/>
-            <Entry IsPassword="True" Text = "{Binding Password}"/>
+            <Entry Placeholder="Email" Text="{Binding Email}"/>
+            <Entry Placeholder="Password" IsPassword="True" Text = "{Binding Password}"/>
+            
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
             
             <!--Buttons-->
-            <Button
-            Text="Sign In"
-            Command="{Binding SignInCommand}"/>
-            <Button
-            Text="Need an account? Sign Up!"
-            Command="{Binding NavigateSignUpCommand}"/>
+            <Button Text="Sign In" 
+                    Command="{Binding SignInCommand}" 
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                    HorizontalOptions="Center"/>
         </VerticalStackLayout>
+        
+            
+            <!-- Spacer (Row 1) -->
+            <BoxView Grid.Row="1" HeightRequest="0" />
+            
+            <Button 
+                Grid.Row="2"
+                Text="Need an account? Sign Up!" 
+                Command="{Binding NavigateSignUpCommand}" 
+                HorizontalOptions="Center"
+                VerticalOptions="End"/>
+        
+        
+            </Grid>
     </ContentPage.Content>
 </ContentPage>

@@ -9,14 +9,13 @@ public partial class SignUpViewModel: ObservableObject
     //Inject Firebase Auth Client
     private readonly FirebaseAuthClient _authClient;
     
-    [ObservableProperty]
-    private string _email;
+    [ObservableProperty] private string _email;
     
-    [ObservableProperty]
-    private string _name;
+    [ObservableProperty] private string _name;
     
-    [ObservableProperty]
-    private string _password;
+    [ObservableProperty] private string _password;
+    
+    [ObservableProperty] private bool _isBusy; //flag
     
     public SignUpViewModel(FirebaseAuthClient authClient)
     {
@@ -26,9 +25,28 @@ public partial class SignUpViewModel: ObservableObject
     [RelayCommand]
     private async Task SignUp()
     {
-        await _authClient.CreateUserWithEmailAndPasswordAsync(Email, Password, Name);
-        await Shell.Current.GoToAsync("//SignInPage");
-        
+        if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(Name))
+        {
+            await Shell.Current.DisplayAlert("Missing Fields", "All fields are required.", "OK");
+            return;
+        }
+
+        IsBusy = true;
+
+        try
+        {
+            await _authClient.CreateUserWithEmailAndPasswordAsync(Email, Password, Name);
+            await Shell.Current.DisplayAlert("Account Created", "You can now sign in.", "OK");
+            await Shell.Current.GoToAsync("//SignInPage");
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Sign Up Failed", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
     
     [RelayCommand]
