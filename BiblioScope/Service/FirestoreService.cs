@@ -94,4 +94,80 @@ public class FirestoreService
             Console.WriteLine($"Firestore error: {response.StatusCode} - {error}");
         }
     }
+    
+    //loading the library on sign in 
+    public async Task<List<Book>> GetUserBooksAsync()
+    {
+        var url =
+            $"https://firestore.googleapis.com/v1/projects/{_projectId}/databases/(default)/documents/users/{_userId}/library";
+        var response = await _httpClient.GetAsync(url);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"[Firestore] Failed to fetch books: {response.StatusCode}");
+            return new List<Book>();
+        }
+
+        var json = await response.Content.ReadAsStringAsync();
+        var document = JsonDocument.Parse(json);
+        var books = new List<Book>();
+
+        if (!document.RootElement.TryGetProperty("documents", out var docArray)) return books;
+
+        foreach (var doc in docArray.EnumerateArray())
+        {
+            if (!doc.TryGetProperty("fields", out var fields)) continue;
+
+            var book = new Book
+            {
+                Isbn = fields.TryGetProperty("isbn", out var isbn) ? isbn.GetProperty("stringValue").GetString() : "",
+                Title = fields.TryGetProperty("title", out var title)
+                    ? title.GetProperty("stringValue").GetString()
+                    : "",
+                Author = fields.TryGetProperty("author", out var author)
+                    ? author.GetProperty("stringValue").GetString()
+                    : "",
+                Description = fields.TryGetProperty("description", out var desc)
+                    ? desc.GetProperty("stringValue").GetString()
+                    : "",
+                CoverImageUrl = fields.TryGetProperty("coverImageUrl", out var cover)
+                    ? cover.GetProperty("stringValue").GetString()
+                    : "",
+                Publisher = fields.TryGetProperty("publisher", out var pub)
+                    ? pub.GetProperty("stringValue").GetString()
+                    : "",
+                SeriesName = fields.TryGetProperty("seriesName", out var series)
+                    ? series.GetProperty("stringValue").GetString()
+                    : "",
+                ReleaseDate = fields.TryGetProperty("releaseDate", out var rd)
+                    ? rd.GetProperty("stringValue").GetString()
+                    : "",
+                Rating = fields.TryGetProperty("rating", out var rating)
+                    ? rating.GetProperty("doubleValue").GetDouble()
+                    : 0.0,
+                Pages = fields.TryGetProperty("pages", out var pages) &&
+                        pages.TryGetProperty("integerValue", out var pageVal)
+                    ? int.Parse(pageVal.GetString() ?? "0")
+                    : 0,
+                Genres = ExtractStringArray(fields, "genres"),
+                Tags = ExtractStringArray(fields, "tags"),
+                Moods = ExtractStringArray(fields, "moods")
+            };
+
+            books.Add(book);
+        }
+
+        return books;
+    }
+
+    private static List<string> ExtractStringArray(JsonElement fields, string property)
+    {
+        if (!fields.TryGetProperty(property, out var arrayProp)) return new List<string>();
+
+        return arrayProp.TryGetProperty("arrayValue", out var arrayValue) &&
+               arrayValue.TryGetProperty("values", out var values)
+            ? values.EnumerateArray().Select(v => v.GetProperty("stringValue").GetString() ?? "").ToList()
+            : new List<string>();
+    }
+
 }

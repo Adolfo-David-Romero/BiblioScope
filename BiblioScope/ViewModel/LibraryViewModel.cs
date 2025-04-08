@@ -23,7 +23,7 @@ public partial class LibraryViewModel : ObservableObject
     {
         _authClient = authClient;
 
-        ViewBookCommand = new Command<Book>(OnViewBook); // ✅ Command for viewing book
+        ViewBookCommand = new Command<Book>(OnViewBook); 
 
         var user = _authClient.User;
         if (user != null && user.Info != null)

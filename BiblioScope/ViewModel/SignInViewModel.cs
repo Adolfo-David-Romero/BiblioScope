@@ -1,3 +1,4 @@
+using BiblioScope.Model;
 using BiblioScope.View;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -40,11 +41,33 @@ public partial class SignInViewModel: ObservableObject //Utilizes the "ComunityT
         try
         {
             await _authClient.SignInWithEmailAndPasswordAsync(Email, Password);
+            var user = _authClient.User;
+
+            if (user != null)
+            {
+                var idToken = await user.GetIdTokenAsync();
+                var uid = user.Info.Uid;
+
+                var firestoreService = new FirestoreService(uid, idToken);
+                var books = await firestoreService.GetUserBooksAsync();
+
+                // Clear and reload local UserLibrary
+                var library = UserLibrary.Instance;
+                library.Books.Clear();
+                foreach (var book in books)
+                {
+                    library.AddBook(book); // avoids duplicates
+                }
+
+                Console.WriteLine($"[SignIn] Loaded {books.Count} books from Firestore.");
+            }
+
             await Shell.Current.GoToAsync("//HomePage");
         }
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlert("Login Failed", ex.Message, "OK");
+            Console.WriteLine($"[SignIn] Error: {ex.Message}");
         }
         finally
         {

@@ -50,14 +50,7 @@
             </VerticalStackLayout>
 
             <!-- Delete or other action button -->
-            <Button Grid.Column="2"
-                    Text="🗑"
-                    Command="{Binding Source={x:Reference RootControl}, Path=Command}"
-                    CommandParameter="{Binding Source={x:Reference RootControl}, Path=CommandParameter}"
-                    VerticalOptions="Center"
-                    BackgroundColor="Transparent"
-                    FontSize="20"
-                    Padding="5" />
+            
         </Grid>
     </Frame>
 </ContentView>
