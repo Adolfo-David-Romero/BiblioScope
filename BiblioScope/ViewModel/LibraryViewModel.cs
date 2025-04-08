@@ -15,63 +15,103 @@ public partial class LibraryViewModel : ObservableObject
     private readonly FirebaseAuthClient _authClient;
     private FirestoreService _firestoreService;
 
+    
     public ObservableCollection<Book> Books => UserLibrary.Instance.Books;
-
-    public ICommand ViewBookCommand { get; private set; }
-
     public ObservableCollection<Book> FilteredBooks { get; } = new();
+    public ObservableCollection<string> TopGenres { get; } = new();
 
-    [ObservableProperty]
-    private string searchText;
+    [ObservableProperty] private string searchText;
+    [ObservableProperty] private string selectedGenre;
+    
+    //Commands
+    public ICommand ViewBookCommand { get; private set; }
+    public ICommand FilterByGenreCommand { get; }
+    public ICommand ClearGenreFilterCommand { get; }
+
     public LibraryViewModel(FirebaseAuthClient authClient)
     {
         _authClient = authClient;
+        ViewBookCommand = new Command<Book>(OnViewBook);
+        ClearGenreFilterCommand = new Command(() => SelectedGenre = null);
+        
+        //changes in genres
+        FilterByGenreCommand = new Command<string>(genre =>
+        {
+            SelectedGenre = genre;
+        });
+        ClearGenreFilterCommand = new Command(() => SelectedGenre = null);
 
-        ViewBookCommand = new Command<Book>(OnViewBook); 
+        // Watch for changes in the user's library
+        Books.CollectionChanged += (_, __) =>
+        {
+            UpdateGenreFilters();
+            ApplyFilter();
+        };
 
-        // Copy initial books to FilteredBooks
         foreach (var book in Books)
             FilteredBooks.Add(book);
 
-        Books.CollectionChanged += (_, __) => ApplyFilter();
-        var user = _authClient.User;
-        if (user != null && user.Info != null)
+        InitFirestore();
+    }
+
+    private async void InitFirestore()
+    {
+        try
         {
-            Task.Run(async () =>
-            {
-                try
-                {
-                    var token = await user.GetIdTokenAsync();
-                    var uid = user.Info.Uid;
-                    _firestoreService = new FirestoreService(uid, token);
-                    Console.WriteLine($"[DEBUG] Firestore initialized for {uid}");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[ERROR] Firebase token error: {ex.Message}");
-                }
-            });
+            var user = _authClient.User;
+            var token = await user?.GetIdTokenAsync()!;
+            _firestoreService = new FirestoreService(user.Info.Uid, token);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Firestore init failed: {ex.Message}");
         }
     }
 
-    [RelayCommand]
-    public async Task AddBook(Book book)
+    partial void OnSearchTextChanged(string value) => ApplyFilter();
+    partial void OnSelectedGenreChanged(string value) => ApplyFilter();
+
+    private void ApplyFilter()
+    {
+        FilteredBooks.Clear();
+
+        var query = Books.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(SearchText))
+        {
+            var lower = SearchText.ToLower();
+            query = query.Where(b => b.Title.ToLower().Contains(lower) || b.Author.ToLower().Contains(lower));
+        }
+
+        if (!string.IsNullOrWhiteSpace(SelectedGenre))
+        {
+            query = query.Where(b => b.Genres.Contains(SelectedGenre, StringComparer.OrdinalIgnoreCase));
+        }
+
+        foreach (var book in query)
+            FilteredBooks.Add(book);
+    }
+
+    private void UpdateGenreFilters()
+    {
+        var genres = Books.SelectMany(b => b.Genres)
+                          .Distinct(StringComparer.OrdinalIgnoreCase)
+                          .OrderBy(g => g)
+                          .ToList();
+
+        TopGenres.Clear();
+        foreach (var genre in genres)
+            TopGenres.Add(genre);
+    }
+
+    private async void OnViewBook(Book book)
     {
         if (book == null) return;
 
-        if (UserLibrary.Instance.Contains(book))
+        await Shell.Current.GoToAsync(nameof(LibraryBookDetailPage), true, new Dictionary<string, object>
         {
-            await Shell.Current.DisplayAlert("Already Added", "This book is already in your library.", "OK");
-            return;
-        }
-
-        UserLibrary.Instance.AddBook(book);
-        await Shell.Current.DisplayAlert("Added", $"“{book.Title}” has been added to your library!", "Nice!");
-
-        if (_firestoreService != null)
-        {
-            await _firestoreService.SaveBookAsync(book);
-        }
+            { "SelectedBook", book }
+        });
     }
 
     [RelayCommand]
@@ -79,65 +119,15 @@ public partial class LibraryViewModel : ObservableObject
     {
         if (book == null) return;
 
-        bool confirm = await Shell.Current.DisplayAlert(
-            "Remove Book",
-            $"Are you sure you want to remove \"{book.Title}\"?",
+        bool confirm = await Shell.Current.DisplayAlert("Remove Book",
+            $"Remove \"{book.Title}\" from your library?",
             "Remove", "Cancel");
 
         if (confirm)
         {
             UserLibrary.Instance.RemoveBook(book);
-            Console.WriteLine($"[DEBUG] Attempting to delete {book.Isbn} from Firestore...");
-
             if (_firestoreService != null && !string.IsNullOrWhiteSpace(book.Isbn))
-            {
                 await _firestoreService.DeleteBookAsync(book.Isbn);
-            }
-            else
-            {
-                Console.WriteLine("[DEBUG] FirestoreService is null.");
-            }
         }
     }
-
-
-
-    private async void OnViewBook(Book book)
-    {
-        if (book == null) return;
-
-        await Shell.Current.GoToAsync(nameof(View.LibraryBookDetailPage), true, new Dictionary<string, object>
-        {
-            { "SelectedBook", book }
-        });
-    }
-    private async void ViewBook(Book book)
-    {
-        if (book == null) return;
-
-        await Shell.Current.GoToAsync("//LibraryBookDetailPage", true, new Dictionary<string, object>
-        {
-            { "SelectedBook", book }
-        });
-    }
-    //Filtering methods
-    partial void OnSearchTextChanged(string value)
-    {
-        ApplyFilter();
-    }
-
-    private void ApplyFilter()
-    {
-        FilteredBooks.Clear();
-        var lower = SearchText?.ToLower() ?? "";
-        var filtered = string.IsNullOrWhiteSpace(lower)
-            ? Books
-            : Books.Where(b => b.Title.ToLower().Contains(lower) || b.Author.ToLower().Contains(lower));
-
-        foreach (var book in filtered)
-            FilteredBooks.Add(book);
-    }
-    
-
-    
 }

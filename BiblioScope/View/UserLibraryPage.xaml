@@ -23,6 +23,58 @@
                        FontSize="18"
                        HorizontalOptions="Center"
                        VerticalOptions="Center" />
+                <ScrollView Orientation="Horizontal">
+                    <HorizontalStackLayout Spacing="8" Padding="10">
+                <!--Genre Bubbles-->
+                <Button 
+                    Text="Clear Genre Filter" 
+                    Command="{Binding ClearGenreFilterCommand}"
+                    IsVisible="{Binding SelectedGenre, Converter={StaticResource NotNullOrEmptyToBoolConverter}}" />
+                <Button 
+                    Text="All"
+                    BackgroundColor="#34495e"
+                    TextColor="White"
+                    CornerRadius="20"
+                    Padding="10,4"
+                    Command="{Binding ClearGenreFilterCommand}" />
+
+                <Button Text="Fiction" BackgroundColor="Blue" TextColor="White"
+                        CornerRadius="20" Padding="10,4"
+                        Command="{Binding FilterByGenreCommand}"
+                        CommandParameter="Fiction" />
+                
+                <Button Text="Non-Fiction" BackgroundColor="Green" TextColor="Black"
+                        CornerRadius="20" Padding="10,4"
+                        Command="{Binding FilterByGenreCommand}"
+                        CommandParameter="Non Fiction" />
+                
+                <Button Text="Fantasy" BackgroundColor="#8e44ad" TextColor="White"
+                        CornerRadius="20" Padding="10,4"
+                        Command="{Binding FilterByGenreCommand}"
+                        CommandParameter="Fantasy" />
+
+                <Button Text="Science Fiction" BackgroundColor="#3498db" TextColor="White"
+                        CornerRadius="20" Padding="10,4"
+                        Command="{Binding FilterByGenreCommand}"
+                        CommandParameter="Science Fiction" />
+                
+                <Button Text="Romance" BackgroundColor="Red" TextColor="White"
+                        CornerRadius="20" Padding="10,4"
+                        Command="{Binding FilterByGenreCommand}"
+                        CommandParameter="Romance" />
+                
+                <Button Text="Horror" BackgroundColor="Black" TextColor="White"
+                        CornerRadius="20" Padding="10,4"
+                        Command="{Binding FilterByGenreCommand}"
+                        CommandParameter="Horror" />
+                
+                <Button Text="Mystery" BackgroundColor="white" TextColor="Black"
+                        CornerRadius="20" Padding="10,4"
+                        Command="{Binding FilterByGenreCommand}"
+                        CommandParameter="Mystery" />
+
+                    </HorizontalStackLayout>
+                </ScrollView>
 
                 <CollectionView ItemsSource="{Binding FilteredBooks}">
                     <CollectionView.ItemTemplate>
