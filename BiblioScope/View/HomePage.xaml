@@ -2,8 +2,57 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:view="clr-namespace:BiblioScope.View"
+             xmlns:viewModel="clr-namespace:BiblioScope.ViewModel"
              x:Class="BiblioScope.View.HomePage">
     <ContentPage.Content>
-        
+        <ScrollView>
+    <VerticalStackLayout Padding="10" Spacing="10">
+
+        <Label Text="Discover Books"
+               FontSize="24"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+
+        <!-- Genre categories -->
+        <StackLayout BindableLayout.ItemsSource="{Binding GenreSections}" Spacing="15">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <VerticalStackLayout Spacing="5" Padding="0">
+
+                        <!-- Genre Title -->
+                        <Label Text="{Binding Genre}" 
+                               FontFamily="Roboto"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               Margin="5,0,0,0" />
+
+                        <!-- Book Row -->
+                        <CollectionView ItemsSource="{Binding Books}"
+                                        ItemsLayout="HorizontalList"
+                                        SelectionMode="None"
+                                        Margin="0"
+                                        HeightRequest="160">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <view:BookCardView
+                                        Margin="5,0"
+                                        Book="{Binding}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:HomeViewModel}}, Path=BookSelectedCommand}"
+                                        CommandParameter="{Binding}" />
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </StackLayout>
+
+    </VerticalStackLayout>
+</ScrollView>
+
+
+
     </ContentPage.Content>
 </ContentPage>
