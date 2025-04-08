@@ -5,24 +5,33 @@
              x:Class="BiblioScope.View.ScanBookPage">
     <ContentPage.Content>
         <ScrollView>
-            <VerticalStackLayout Padding="20" Spacing="20">
-                <Label Text="Take or select a photo of a book cover."
-                       FontSize="Medium"
+            <VerticalStackLayout Padding="20" Spacing="15">
+                <Label Text="Scan or select a photo of the book cover"
+                       FontSize="18" 
                        HorizontalOptions="Center" />
 
-                <Button Text="Take or Pick Photo"
-                        Clicked="OnPickPhotoClicked" />
+                <Button Text="Pick a Photo" Clicked="OnPickPhotoClicked" />
 
                 <Image x:Name="BookImage"
                        HeightRequest="200"
                        Aspect="AspectFit" />
 
-                <Label Text="OCR Text:"
-                       FontAttributes="Bold" />
+                <Label Text="Tap a line of text to search:"
+                       FontAttributes="Bold"
+                       FontSize="16"
+                       IsVisible="{Binding OCRLines.Count, Converter={StaticResource ZeroToBoolConverter}}" />
 
-                <Label x:Name="OcrOutput"
-                       FontSize="Small"
-                       LineBreakMode="WordWrap" />
+                <CollectionView ItemsSource="{Binding OCRLines}"
+                                SelectionMode="Single"
+                                SelectionChanged="OnLineSelected">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="8" Margin="4" BackgroundColor="#f0f0f0" CornerRadius="10">
+                                <Label Text="{Binding .}" FontSize="14" />
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </VerticalStackLayout>
         </ScrollView>
     </ContentPage.Content>
