@@ -1,15 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BiblioScope.ViewModel;
 
 namespace BiblioScope.View;
 
 public partial class UserLibraryPage : ContentPage
 {
+    public LibraryViewModel ViewModel { get; }
+
     public UserLibraryPage()
     {
         InitializeComponent();
+        ViewModel = new LibraryViewModel();
+        BindingContext = ViewModel;
     }
 }

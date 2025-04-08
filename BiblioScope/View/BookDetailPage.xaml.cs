@@ -25,10 +25,17 @@ public partial class BookDetailPage : ContentPage
     }
     private void OnSaveClicked(object sender, EventArgs e)
     {
-        if (SelectedBook != null)
+        if (SelectedBook == null) return;
+
+        var library = UserLibrary.Instance;
+
+        if (library.Contains(SelectedBook))
         {
-            UserLibrary.AddBook(SelectedBook);
-            DisplayAlert("Saved", $"{SelectedBook.Title} added to your library!", "OK");
+            DisplayAlert("Already in Library", "You’ve already added this book.", "OK");
+            return;
         }
+
+        library.AddBook(SelectedBook);
+        DisplayAlert("Success", $"“{SelectedBook.Title}” was added to your library!", "Nice!");
     }
 }
