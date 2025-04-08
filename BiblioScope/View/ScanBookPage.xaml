@@ -5,29 +5,33 @@
              x:Class="BiblioScope.View.ScanBookPage">
     <ContentPage.Content>
         <ScrollView>
-            <VerticalStackLayout Padding="20" Spacing="15">
-                <Label Text="Scan or select a photo of the book cover"
-                       FontSize="18" 
-                       HorizontalOptions="Center" />
-
-                <Button Text="Pick a Photo" Clicked="OnPickPhotoClicked" />
+            <VerticalStackLayout Padding="20" Spacing="16">
+                <Button Text="Pick or Take Photo"
+                        Clicked="OnPickPhotoClicked" />
 
                 <Image x:Name="BookImage"
                        HeightRequest="200"
                        Aspect="AspectFit" />
 
-                <Label Text="Tap a line of text to search:"
+                <Label Text="Select the text that best represents the book title:"
                        FontAttributes="Bold"
-                       FontSize="16"
-                       IsVisible="{Binding OCRLines.Count, Converter={StaticResource ZeroToBoolConverter}}" />
+                       FontSize="Medium"
+                       Margin="0,20,0,0" />
 
                 <CollectionView ItemsSource="{Binding OCRLines}"
                                 SelectionMode="Single"
                                 SelectionChanged="OnLineSelected">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Frame Padding="8" Margin="4" BackgroundColor="#f0f0f0" CornerRadius="10">
-                                <Label Text="{Binding .}" FontSize="14" />
+                            <Frame Padding="12"
+                                   Margin="0,4"
+                                   BackgroundColor="#eeeeee"
+                                   CornerRadius="16"
+                                   HasShadow="False">
+                                <Label Text="{Binding}" FontSize="14" />
                             </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

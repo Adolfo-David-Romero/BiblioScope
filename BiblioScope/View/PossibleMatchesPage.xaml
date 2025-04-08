@@ -6,16 +6,25 @@
              xmlns:viewModel="clr-namespace:BiblioScope.ViewModel"
              x:Class="BiblioScope.View.PossibleMatchesPage">
     <ContentPage.Content>
+        
+
         <ScrollView>
-            <VerticalStackLayout Padding="20" Spacing="10">
-                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            <VerticalStackLayout Padding="20" Spacing="12">
+                <ActivityIndicator 
+                    IsVisible="{Binding IsBusy}" 
+                    IsRunning="{Binding IsBusy}" />
+
+                <Label Text="Possible Matches"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center" />
 
                 <CollectionView ItemsSource="{Binding SearchResults}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <view:BookCardView
                                 Book="{Binding}"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type view:PossibleMatchesPage}}, Path=BindingContext.BookSelectedCommand}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:PossibleMatchesViewModel}}, Path=BookSelectedCommand}"
                                 CommandParameter="{Binding}" />
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

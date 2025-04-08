@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using BiblioScope.Model;
+using BiblioScope.View;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BiblioScope.ViewModel;
@@ -71,7 +72,9 @@ public class PossibleMatchesViewModel : INotifyPropertyChanged, IQueryAttributab
 
     private async void OnBookSelected(Book selectedBook)
     {
-        await Shell.Current.GoToAsync("//BookDetailPage", true, new Dictionary<string, object>
+        if (selectedBook == null) return;
+
+        await Shell.Current.GoToAsync(nameof(BookDetailPage), true, new Dictionary<string, object>
         {
             { "SelectedBook", selectedBook }
         });

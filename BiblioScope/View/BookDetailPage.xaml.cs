@@ -42,8 +42,7 @@ public partial class BookDetailPage : ContentPage
         await DisplayAlert("Success", $"“{SelectedBook.Title}” was added to your library!", "Nice!");
         
         // Navigate back
-        await Shell.Current.GoToAsync("..");
-        
+        await Shell.Current.GoToAsync("//UserLibraryPage");
         try
         {
             var authClient = _authClient;
