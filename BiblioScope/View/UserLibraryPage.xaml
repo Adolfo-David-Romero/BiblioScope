@@ -3,37 +3,38 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:view="clr-namespace:BiblioScope.View"
-             xmlns:model="clr-namespace:BiblioScope.Model"
+             xmlns:iOsSpecific1="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              x:Class="BiblioScope.View.UserLibraryPage">
     <ContentPage.Content>
         <ScrollView>
-        <VerticalStackLayout>
-            <Label
-                Text="Your Library"
-                FontAttributes="Bold"
-                FontFamily="Roboto"
-                FontSize="30"
-                HorizontalOptions="Center"/>
-            <Label Text="Your library is empty... Start reading!"
-                   IsVisible="{Binding Books.Count, Converter={StaticResource ZeroToBoolConverter}}"
-                   FontSize="18"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center" />
-            
-        
-    
-            <CollectionView ItemsSource="{Binding Books}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <view:LibraryBookCardView
-                            Book="{Binding .}"
-                            ViewCommand="{Binding Source={RelativeSource AncestorType={x:Type view:UserLibraryPage}}, Path=BindingContext.ViewBookCommand}" />
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Your Library"
+                       FontAttributes="Bold"
+                       FontSize="30"
+                       HorizontalOptions="Center" />
 
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </VerticalStackLayout>
-    </ScrollView>
+                <SearchBar Placeholder="Search your library..."
+                           Text="{Binding SearchText}"
+                           HorizontalOptions="FillAndExpand"
+                           iOsSpecific1:SearchBar.SearchBarStyle="Minimal"/>
+
+                <Label Text="Your library is empty... Start reading!"
+                       IsVisible="{Binding FilteredBooks.Count, Converter={StaticResource ZeroToBoolConverter}}"
+                       FontSize="18"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+
+                <CollectionView ItemsSource="{Binding FilteredBooks}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <view:LibraryBookCardView
+                                Book="{Binding}"
+                                ViewCommand="{Binding Source={RelativeSource AncestorType={x:Type view:UserLibraryPage}}, Path=BindingContext.ViewBookCommand}" />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
         
     </ContentPage.Content>
 </ContentPage>

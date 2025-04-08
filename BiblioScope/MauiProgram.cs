@@ -44,6 +44,8 @@ namespace BiblioScope
             builder.Services.AddTransient<LibraryViewModel>();
             builder.Services.AddSingleton<UserLibraryPage>();
             
+            builder.Services.AddTransient<LibraryBookDetailPage>();
+            
             return builder.Build();
         }
     }

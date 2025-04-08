@@ -19,12 +19,21 @@ public partial class LibraryViewModel : ObservableObject
 
     public ICommand ViewBookCommand { get; private set; }
 
+    public ObservableCollection<Book> FilteredBooks { get; } = new();
+
+    [ObservableProperty]
+    private string searchText;
     public LibraryViewModel(FirebaseAuthClient authClient)
     {
         _authClient = authClient;
 
         ViewBookCommand = new Command<Book>(OnViewBook); 
 
+        // Copy initial books to FilteredBooks
+        foreach (var book in Books)
+            FilteredBooks.Add(book);
+
+        Books.CollectionChanged += (_, __) => ApplyFilter();
         var user = _authClient.User;
         if (user != null && user.Info != null)
         {
@@ -78,12 +87,20 @@ public partial class LibraryViewModel : ObservableObject
         if (confirm)
         {
             UserLibrary.Instance.RemoveBook(book);
-            if (_firestoreService != null)
+            Console.WriteLine($"[DEBUG] Attempting to delete {book.Isbn} from Firestore...");
+
+            if (_firestoreService != null && !string.IsNullOrWhiteSpace(book.Isbn))
             {
                 await _firestoreService.DeleteBookAsync(book.Isbn);
             }
+            else
+            {
+                Console.WriteLine("[DEBUG] FirestoreService is null.");
+            }
         }
     }
+
+
 
     private async void OnViewBook(Book book)
     {
@@ -94,4 +111,33 @@ public partial class LibraryViewModel : ObservableObject
             { "SelectedBook", book }
         });
     }
+    private async void ViewBook(Book book)
+    {
+        if (book == null) return;
+
+        await Shell.Current.GoToAsync("//LibraryBookDetailPage", true, new Dictionary<string, object>
+        {
+            { "SelectedBook", book }
+        });
+    }
+    //Filtering methods
+    partial void OnSearchTextChanged(string value)
+    {
+        ApplyFilter();
+    }
+
+    private void ApplyFilter()
+    {
+        FilteredBooks.Clear();
+        var lower = SearchText?.ToLower() ?? "";
+        var filtered = string.IsNullOrWhiteSpace(lower)
+            ? Books
+            : Books.Where(b => b.Title.ToLower().Contains(lower) || b.Author.ToLower().Contains(lower));
+
+        foreach (var book in filtered)
+            FilteredBooks.Add(book);
+    }
+    
+
+    
 }

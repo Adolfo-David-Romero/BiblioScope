@@ -20,80 +20,103 @@ public class FirestoreService
     }
     public async Task DeleteBookAsync(string isbn)
     {
-        var url = $"https://firestore.googleapis.com/v1/projects/{_projectId}/databases/(default)/documents/users/{_userId}/library/{isbn}";
-        var response = await _httpClient.DeleteAsync(url);
-
-        if (response.IsSuccessStatusCode)
+        if (string.IsNullOrWhiteSpace(isbn))
         {
-            Console.WriteLine($"[Firestore] Deleted book {isbn}");
+            Console.WriteLine("[Delete Error] ISBN is null or empty.");
+            return;
         }
-        else
+
+        if (string.IsNullOrWhiteSpace(_userId) || _httpClient == null)
         {
-            var error = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"[Firestore] Error deleting: {response.StatusCode} - {error}");
+            Console.WriteLine("[Delete Error] FirestoreService is not properly initialized.");
+            return;
+        }
+
+        var url = $"https://firestore.googleapis.com/v1/projects/{_projectId}/databases/(default)/documents/users/{_userId}/library/{isbn}";
+
+        try
+        {
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"[Firestore] Book deleted: {isbn}");
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Firestore error on delete: {response.StatusCode} - {error}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Delete Error] {ex.Message}");
         }
     }
+
+
+
+
+
 
     public async Task SaveBookAsync(Book book)
+{
+    string documentId = book.Isbn ?? Guid.NewGuid().ToString();
+    var url = $"https://firestore.googleapis.com/v1/projects/{_projectId}/databases/(default)/documents/users/{_userId}/library/{documentId}";
+
+    var fields = new Dictionary<string, object>();
+
+    void AddField(string key, object value)
     {
-        string documentId = book.Isbn ?? Guid.NewGuid().ToString();
-        var url =
-            $"https://firestore.googleapis.com/v1/projects/{_projectId}/databases/(default)/documents/users/{_userId}/library/{documentId}";
-
-        var firestoreBook = new
-        {
-            fields = new
+        if (value is string s && !string.IsNullOrWhiteSpace(s))
+            fields[key] = new { stringValue = s };
+        else if (value is int i)
+            fields[key] = new { integerValue = i };
+        else if (value is double d)
+            fields[key] = new { doubleValue = d };
+        else if (value is IEnumerable<string> list && list.Any())
+            fields[key] = new
             {
-                isbn = new { stringValue = book.Isbn },
-                title = new { stringValue = book.Title },
-                subtitle = new { stringValue = book.Subtitle },
-                author = new { stringValue = book.Author },
-                description = new { stringValue = book.Description },
-                coverImageUrl = new { stringValue = book.CoverImageUrl },
-                publisher = new { stringValue = book.Publisher },
-                seriesName = new { stringValue = book.SeriesName },
-                releaseDate = new { stringValue = book.ReleaseDate },
-                rating = new { doubleValue = book.Rating },
-                pages = new { integerValue = book.Pages },
-                genres = new
+                arrayValue = new
                 {
-                    arrayValue = new
-                    {
-                        values = book.Genres.Select(g => new { stringValue = g }).ToArray()
-                    }
-                },
-                tags = new
-                {
-                    arrayValue = new
-                    {
-                        values = book.Tags.Select(t => new { stringValue = t }).ToArray()
-                    }
-                },
-                moods = new
-                {
-                    arrayValue = new
-                    {
-                        values = book.Moods.Select(m => new { stringValue = m }).ToArray()
-                    }
+                    values = list.Select(v => new { stringValue = v }).ToArray()
                 }
-            }
-        };
-
-        var json = JsonSerializer.Serialize(firestoreBook);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-        var response = await _httpClient.PatchAsync(url, content); // PATCH allows upsert
-
-        if (response.IsSuccessStatusCode)
-        {
-            Console.WriteLine($"Book saved to Firestore: {book.Title}");
-        }
-        else
-        {
-            var error = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Firestore error: {response.StatusCode} - {error}");
-        }
+            };
     }
+
+    AddField("isbn", book.Isbn);
+    AddField("title", book.Title);
+    AddField("subtitle", book.Subtitle);
+    AddField("author", book.Author);
+    AddField("description", book.Description);
+    AddField("coverImageUrl", book.CoverImageUrl);
+    AddField("publisher", book.Publisher);
+    AddField("seriesName", book.SeriesName);
+    AddField("releaseDate", book.ReleaseDate);
+    AddField("rating", book.Rating);
+    AddField("pages", book.Pages);
+    AddField("genres", book.Genres);
+    AddField("tags", book.Tags);
+    AddField("moods", book.Moods);
+
+    var firestoreBook = new { fields };
+
+    var json = JsonSerializer.Serialize(firestoreBook);
+    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+    var response = await _httpClient.PatchAsync(url, content); // PATCH = upsert
+
+    if (response.IsSuccessStatusCode)
+    {
+        Console.WriteLine($"[Firestore] Book saved: {book.Title}");
+    }
+    else
+    {
+        var error = await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"Firestore error: {response.StatusCode} - {error}");
+    }
+}
+
     
     //loading the library on sign in 
     public async Task<List<Book>> GetUserBooksAsync()
