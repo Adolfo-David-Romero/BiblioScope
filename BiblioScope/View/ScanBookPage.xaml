@@ -6,8 +6,17 @@
     <ContentPage.Content>
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="16">
-                <Button Text="Pick or Take Photo"
+                <!--Upload Buttons-->
+                <HorizontalStackLayout>
+                    <Button Text="Chose Image"
+                            ImageSource="upload_icon"
+                            HorizontalOptions="Center"
                         Clicked="OnPickPhotoClicked" />
+                    <Button Text="Take Photo"
+                            ImageSource="camera_icon"
+                        Clicked="OnTakePhotoClicked" 
+                            HorizontalOptions="Center"/>
+                </HorizontalStackLayout>
 
                 <Image x:Name="BookImage"
                        HeightRequest="200"

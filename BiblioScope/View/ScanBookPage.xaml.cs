@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
+using SkiaSharp;
 
 namespace BiblioScope.View;
 
@@ -74,4 +75,53 @@ public partial class ScanBookPage : ContentPage
     }
 
 
+    private async void OnTakePhotoClicked(object? sender, EventArgs e)
+    {
+        try
+        {
+            var photo = await MediaPicker.CapturePhotoAsync();
+            if (photo == null) return;
+
+            var originalStream = await photo.OpenReadAsync();
+
+            //SkiaSharp is a library needed to convert HEIC (default iPhone format) --> JPEG
+            // Load image via SkiaSharp
+            using var skStream = new SKManagedStream(originalStream);
+            using var bitmap = SKBitmap.Decode(skStream);
+
+            if (bitmap == null)
+            {
+                await DisplayAlert("Error", "Could not decode the image.", "OK");
+                return;
+            }
+
+            // Convert to JPEG
+            using var image = SKImage.FromBitmap(bitmap);
+            using var jpegStream = new MemoryStream();
+            image.Encode(SKEncodedImageFormat.Jpeg, 90).SaveTo(jpegStream);
+
+            // Save to disk for preview
+            var imagePath = Path.Combine(FileSystem.CacheDirectory,
+                $"{Path.GetFileNameWithoutExtension(photo.FileName)}.jpg");
+            await File.WriteAllBytesAsync(imagePath, jpegStream.ToArray());
+            BookImage.Source = ImageSource.FromFile(imagePath);
+            OCRLines.Clear();
+
+            // Reset position before sending to Azure
+            jpegStream.Position = 0;
+
+            // Azure OCR
+            var client = new ComputerVisionClient(new ApiKeyServiceClientCredentials(azureKey))
+                { Endpoint = AzureEndpoint };
+            var result = await client.RecognizePrintedTextInStreamAsync(true, jpegStream, OcrLanguages.En);
+
+            foreach (var region in result.Regions)
+            foreach (var line in region.Lines)
+                OCRLines.Add(string.Join(" ", line.Words.Select(w => w.Text)));
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"Failed to process photo: {ex.Message}", "OK");
+        }
+    }
 }
