@@ -1,23 +1,29 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Input;
 using BiblioScope.Model;
+using BiblioScope.View;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
 
 namespace BiblioScope.ViewModel;
 
+
 public partial class LibraryViewModel : ObservableObject
 {
-    
     private readonly FirebaseAuthClient _authClient;
     private FirestoreService _firestoreService;
 
     public ObservableCollection<Book> Books => UserLibrary.Instance.Books;
 
+    public ICommand ViewBookCommand { get; private set; }
+
     public LibraryViewModel(FirebaseAuthClient authClient)
     {
         _authClient = authClient;
+
+        ViewBookCommand = new Command<Book>(OnViewBook); // ✅ Command for viewing book
 
         var user = _authClient.User;
         if (user != null && user.Info != null)
@@ -26,22 +32,16 @@ public partial class LibraryViewModel : ObservableObject
             {
                 try
                 {
-                    var freshToken = await user.GetIdTokenAsync(); // ✅ fetch new token
+                    var token = await user.GetIdTokenAsync();
                     var uid = user.Info.Uid;
-
-                    Console.WriteLine($"[DEBUG] Initializing FirestoreService: UID={uid}, Token Exists={freshToken != null}");
-
-                    _firestoreService = new FirestoreService(uid, freshToken);
+                    _firestoreService = new FirestoreService(uid, token);
+                    Console.WriteLine($"[DEBUG] Firestore initialized for {uid}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error: Failed to get Firebase ID token: {ex.Message}");
+                    Console.WriteLine($"[ERROR] Firebase token error: {ex.Message}");
                 }
             });
-        }
-        else
-        {
-            Console.WriteLine("Error: User or credential is null. FirestoreService not initialized.");
         }
     }
 
@@ -53,20 +53,15 @@ public partial class LibraryViewModel : ObservableObject
         if (UserLibrary.Instance.Contains(book))
         {
             await Shell.Current.DisplayAlert("Already Added", "This book is already in your library.", "OK");
+            return;
         }
-        else
+
+        UserLibrary.Instance.AddBook(book);
+        await Shell.Current.DisplayAlert("Added", $"“{book.Title}” has been added to your library!", "Nice!");
+
+        if (_firestoreService != null)
         {
-            UserLibrary.Instance.AddBook(book);
-            await Shell.Current.DisplayAlert("Added", $"\"{book.Title}\" has been added to your library!", "Nice!");
-            Console.WriteLine($"[DEBUG] Trying to save to Firestore: {book.Title}");
-            if (_firestoreService != null)
-            {
-                await _firestoreService.SaveBookAsync(book);
-            }
-            else
-            {
-                Console.WriteLine(" _firestoreService is null - not saving.");
-            }
+            await _firestoreService.SaveBookAsync(book);
         }
     }
 
@@ -83,6 +78,20 @@ public partial class LibraryViewModel : ObservableObject
         if (confirm)
         {
             UserLibrary.Instance.RemoveBook(book);
+            if (_firestoreService != null)
+            {
+                await _firestoreService.DeleteBookAsync(book.Isbn);
+            }
         }
+    }
+
+    private async void OnViewBook(Book book)
+    {
+        if (book == null) return;
+
+        await Shell.Current.GoToAsync(nameof(View.LibraryBookDetailPage), true, new Dictionary<string, object>
+        {
+            { "SelectedBook", book }
+        });
     }
 }

@@ -22,20 +22,16 @@
             
         
     
-    <CollectionView ItemsSource="{Binding Books}">
-        
-        <CollectionView.ItemTemplate>
-            
-            <DataTemplate x:DataType="model:Book">
-                
-                <view:BookCardView
-                    Book="{Binding .}"
-                    Command="{Binding Source={RelativeSource AncestorType={x:Type view:UserLibraryPage}}, Path=BindingContext.RemoveBookCommand}"
-                    CommandParameter="{Binding .}" />
-            </DataTemplate>
-            
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+            <CollectionView ItemsSource="{Binding Books}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <view:LibraryBookCardView
+                            Book="{Binding .}"
+                            ViewCommand="{Binding Source={RelativeSource AncestorType={x:Type view:UserLibraryPage}}, Path=BindingContext.ViewBookCommand}" />
+
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </VerticalStackLayout>
     </ScrollView>
         

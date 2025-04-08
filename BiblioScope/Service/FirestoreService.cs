@@ -18,6 +18,21 @@ public class FirestoreService
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _idToken);
     }
+    public async Task DeleteBookAsync(string isbn)
+    {
+        var url = $"https://firestore.googleapis.com/v1/projects/{_projectId}/databases/(default)/documents/users/{_userId}/library/{isbn}";
+        var response = await _httpClient.DeleteAsync(url);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"[Firestore] Deleted book {isbn}");
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"[Firestore] Error deleting: {response.StatusCode} - {error}");
+        }
+    }
 
     public async Task SaveBookAsync(Book book)
     {

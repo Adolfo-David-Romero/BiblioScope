@@ -8,6 +8,7 @@ namespace BiblioScope
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(BookDetailPage), typeof(BookDetailPage));
+            Routing.RegisterRoute(nameof(LibraryBookDetailPage), typeof(LibraryBookDetailPage));
         }
     }
 }

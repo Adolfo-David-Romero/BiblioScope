@@ -8,7 +8,7 @@ using BiblioScope.Model;
 
 namespace BiblioScope.View;
 
-/// <summary>Reusable UI component the represents a book in card form/// </summary>
+/// <summary>Reusable UI component the represents a book in card form with in the search context/// </summary>
 public partial class BookCardView : ContentView
 {
     public BookCardView()
