@@ -1,15 +1,14 @@
 using BiblioScope.ViewModel;
+using Firebase.Auth;
 
 namespace BiblioScope.View;
 
 public partial class UserLibraryPage : ContentPage
 {
-    public LibraryViewModel ViewModel { get; }
-
-    public UserLibraryPage()
+    //private readonly FirebaseAuthClient _auth;
+    public UserLibraryPage(LibraryViewModel viewModel)
     {
         InitializeComponent();
-        ViewModel = new LibraryViewModel();
-        BindingContext = ViewModel;
+        BindingContext = viewModel;
     }
 }
