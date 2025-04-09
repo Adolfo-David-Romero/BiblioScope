@@ -16,6 +16,12 @@
   <img src="BiblioScope/Resources/Images/home_screen_demo.PNG" width="200"/>
 </p>
 
+<details close>
+  <summary>🔑 Test Credentials</summary>
+  <a><strong>Email</strong>: Admin@admin.com</a>
+  <br><strong>Password</strong>: admin!
+</details>
+
 ## Features
 
 - 📷 **Book Scanning with OCR**: Take or upload photos of book covers to extract titles using **Azure Computer Vision**.
