@@ -20,9 +20,13 @@ public partial class UserProfilePage : ContentPage
         _authClient = authClient;
 
         _storage = new FirebaseStorage("biblioscope.firebasestorage.app");
+        
+        //loads profil img once page loads
+        base.OnAppearing();
+        LoadProfileImage();
     }
 
-    private async void LoadProfileImage()
+    public async void LoadProfileImage()
     {
         try
         {

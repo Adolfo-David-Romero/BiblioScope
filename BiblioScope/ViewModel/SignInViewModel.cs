@@ -51,6 +51,7 @@ public partial class SignInViewModel: ObservableObject //Utilizes the "ComunityT
                 var firestoreService = new FirestoreService(uid, idToken);
                 var books = await firestoreService.GetUserBooksAsync();
 
+                
                 // Clear and reload local UserLibrary
                 var library = UserLibrary.Instance;
                 library.Books.Clear();
