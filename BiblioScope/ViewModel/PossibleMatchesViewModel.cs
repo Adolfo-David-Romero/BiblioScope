@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BiblioScope.ViewModel;
 
+/// <summary>UI handler for "possible matches" in book scanning funcitionality/search </summary>
 public class PossibleMatchesViewModel : INotifyPropertyChanged, IQueryAttributable
 {
     private readonly HardcoverBookService _bookService = new();
@@ -39,6 +40,7 @@ public class PossibleMatchesViewModel : INotifyPropertyChanged, IQueryAttributab
         }
     }
 
+    //main search funciton 
     private async Task PerformSearchAsync(string query)
     {
         if (string.IsNullOrWhiteSpace(query)) return;

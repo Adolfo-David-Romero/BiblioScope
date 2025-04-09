@@ -9,7 +9,7 @@ using Firebase.Auth;
 
 namespace BiblioScope.ViewModel;
 
-
+/// <summary>Library viewmodel to control UI for user Library  </summary>
 public partial class LibraryViewModel : ObservableObject
 {
     private readonly FirebaseAuthClient _authClient;

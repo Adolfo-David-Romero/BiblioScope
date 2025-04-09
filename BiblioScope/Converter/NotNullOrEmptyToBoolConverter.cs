@@ -2,6 +2,7 @@ using System.Globalization;
 
 namespace BiblioScope.Converter;
 
+/// <summary> Helper converting null to bool in xaml bindings</summary>
 public class NotNullOrEmptyToBoolConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

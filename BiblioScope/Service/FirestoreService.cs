@@ -4,6 +4,7 @@ using System.Text.Json;
 
 namespace BiblioScope.Model;
 
+/// <summary> Service used to control firestore functionality </summary>
 public class FirestoreService
 {
     private readonly HttpClient _httpClient;
@@ -183,6 +184,7 @@ public class FirestoreService
         return books;
     }
 
+    //heper to extract strings from json 
     private static List<string> ExtractStringArray(JsonElement fields, string property)
     {
         if (!fields.TryGetProperty(property, out var arrayProp)) return new List<string>();

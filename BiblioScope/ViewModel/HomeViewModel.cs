@@ -7,6 +7,7 @@ using BiblioScope.View;
 
 namespace BiblioScope.ViewModel;
 
+/// <summary> Viewmodel to handle UI for homescreen book recs</summary>
 public class HomeViewModel : INotifyPropertyChanged
 {
     private readonly HardcoverBookService _bookService = new();
