@@ -6,22 +6,25 @@
     <ContentPage.Content>
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="10">
-                <Label
-                    Text="{Binding Name, StringFormat='WELCOME, {0}'}"
-                    FontAttributes="Bold"
-                    FontFamily="Roboto"
-                    FontSize="30"
-                    HorizontalOptions="Center"/>
-                <Button
-                    Text="Sign Out"
-                    Command="{Binding SignOutCommand}" 
-                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
-                    HorizontalOptions="Center"/>
-                <Button
-                    Text="Delete account"
-                    Command="{Binding DeleteAccountAsyncCommand}" 
-                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
-                    HorizontalOptions="Center"/>
+                <Image x:Name="ProfileImage"
+                       HeightRequest="120"
+                       WidthRequest="120"
+                       Aspect="AspectFill"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       BackgroundColor="LightGray"
+                       Source="{Binding ProfileImageUrl}" />
+
+                <Button Text="Upload Profile Image" Clicked="OnUploadProfilePictureClicked"/>
+                <Button Text="Delete Profile Image" Clicked="OnDeleteProfilePictureClicked"/>
+    
+                <Label Text="{Binding Name, StringFormat='WELCOME, {0}'}"
+                       FontAttributes="Bold"
+                       FontSize="30"
+                       HorizontalOptions="Center"/>
+
+                <Button Text="Sign Out" Command="{Binding SignOutCommand}" HorizontalOptions="Center"/>
+                <Button Text="Delete account" Command="{Binding DeleteAccountAsyncCommand}" HorizontalOptions="Center"/>
             </VerticalStackLayout>
         </ScrollView>
     </ContentPage.Content>
