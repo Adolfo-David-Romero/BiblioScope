@@ -40,7 +40,7 @@
 
 ## Tech Stack
 
-![Tech](https://skillicons.dev/icons?i=dotnet,cs,apple,firebase,graphql)
+![Tech](https://skillicons.dev/icons?i=dotnet,cs,apple,firebase,azure,graphql)
 
 | Layer    | Savings |
 | -------- | ------- |
