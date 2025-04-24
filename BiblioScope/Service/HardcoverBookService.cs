@@ -14,7 +14,7 @@ public class HardcoverBookService
     {
         _httpClient = new HttpClient();
         _httpClient.BaseAddress = new Uri("https://api.hardcover.app/v1/graphql/");
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJIYXJkY292ZXIiLCJ2ZXJzaW9uIjoiOCIsImp0aSI6IjA1MGNhZDc1LTk4NTktNDk2NS04MGZiLTVkZGNhMDJjNWE5NCIsImFwcGxpY2F0aW9uSWQiOjIsInN1YiI6IjI4NTc4IiwiYXVkIjoiMSIsImlkIjoiMjg1NzgiLCJsb2dnZWRJbiI6dHJ1ZSwiaWF0IjoxNzQzOTgxNTA4LCJleHAiOjE3NzU1MTc1MDgsImh0dHBzOi8vaGFzdXJhLmlvL2p3dC9jbGFpbXMiOnsieC1oYXN1cmEtYWxsb3dlZC1yb2xlcyI6WyJ1c2VyIl0sIngtaGFzdXJhLWRlZmF1bHQtcm9sZSI6InVzZXIiLCJ4LWhhc3VyYS1yb2xlIjoidXNlciIsIlgtaGFzdXJhLXVzZXItaWQiOiIyODU3OCJ9LCJ1c2VyIjp7ImlkIjoyODU3OH19.yzft5DAoT7fWkJlaizchfQg4Am2CfVxb8cPFte4mbp4");
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "[INSERT YOUR HARDCOVER API HERE]");
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         Console.WriteLine("[INIT] HardcoverBookService initialized with base URL: " + _httpClient.BaseAddress);
