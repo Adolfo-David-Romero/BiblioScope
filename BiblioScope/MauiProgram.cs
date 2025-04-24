@@ -27,7 +27,7 @@ namespace BiblioScope
 
             builder.Services.AddSingleton(new FirebaseAuthClient(new FirebaseAuthConfig()
             {
-                ApiKey = "AIzaSyB3bTHLIYEHSN3e2QhVMTYpScfJ65S6GlY",
+                ApiKey = "[INSERT FIREBASE WEB API KEY HERE]",
                 AuthDomain = "biblioscope.firebaseapp.com",
                 Providers = new FirebaseAuthProvider[]
                 {
